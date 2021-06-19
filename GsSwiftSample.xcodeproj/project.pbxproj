@@ -14,6 +14,9 @@
 		9545D309267DD0E200AAF516 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D308267DD0E200AAF516 /* ProfileViewController.swift */; };
 		9545D30B267DD0F700AAF516 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D30A267DD0F700AAF516 /* UserViewController.swift */; };
 		9545D310267DD33C00AAF516 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D30F267DD33C00AAF516 /* ChatViewController.swift */; };
+		95887471267DE19100BDAA50 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95887470267DE19100BDAA50 /* DatabaseManager.swift */; };
+		95887473267DE4C400BDAA50 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95887472267DE4C400BDAA50 /* User.swift */; };
+		959D6BD5267F22E1001427A3 /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 959D6BD4267F22E1001427A3 /* StorageManager.swift */; };
 		95B924D4267CDA4D00D8F44C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B924D3267CDA4D00D8F44C /* AppDelegate.swift */; };
 		95B924D6267CDA4D00D8F44C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95B924D5267CDA4D00D8F44C /* SceneDelegate.swift */; };
 		95B924DB267CDA4D00D8F44C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 95B924D9267CDA4D00D8F44C /* Main.storyboard */; };
@@ -31,6 +34,9 @@
 		9545D308267DD0E200AAF516 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		9545D30A267DD0F700AAF516 /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		9545D30F267DD33C00AAF516 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		95887470267DE19100BDAA50 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		95887472267DE4C400BDAA50 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		959D6BD4267F22E1001427A3 /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
 		95B924D0267CDA4D00D8F44C /* GsSwiftSample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GsSwiftSample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		95B924D3267CDA4D00D8F44C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		95B924D5267CDA4D00D8F44C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -96,6 +102,9 @@
 				95B924DE267CDA4F00D8F44C /* LaunchScreen.storyboard */,
 				95B924E1267CDA4F00D8F44C /* Info.plist */,
 				9545D2FE267DCFED00AAF516 /* GoogleService-Info.plist */,
+				95887470267DE19100BDAA50 /* DatabaseManager.swift */,
+				959D6BD4267F22E1001427A3 /* StorageManager.swift */,
+				95887472267DE4C400BDAA50 /* User.swift */,
 			);
 			path = GsSwiftSample;
 			sourceTree = "<group>";
@@ -225,12 +234,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				9545D30B267DD0F700AAF516 /* UserViewController.swift in Sources */,
+				95887471267DE19100BDAA50 /* DatabaseManager.swift in Sources */,
+				959D6BD5267F22E1001427A3 /* StorageManager.swift in Sources */,
 				9545D309267DD0E200AAF516 /* ProfileViewController.swift in Sources */,
 				9545D305267DD06F00AAF516 /* HomeViewController.swift in Sources */,
 				9545D301267DD04B00AAF516 /* LoginViewController.swift in Sources */,
 				95B924D4267CDA4D00D8F44C /* AppDelegate.swift in Sources */,
 				95B924D6267CDA4D00D8F44C /* SceneDelegate.swift in Sources */,
 				9545D310267DD33C00AAF516 /* ChatViewController.swift in Sources */,
+				95887473267DE4C400BDAA50 /* User.swift in Sources */,
 				9545D303267DD05500AAF516 /* RegisterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
