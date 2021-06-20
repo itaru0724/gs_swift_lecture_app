@@ -68,6 +68,63 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		959D6BD6267F3216001427A3 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				95887470267DE19100BDAA50 /* DatabaseManager.swift */,
+				959D6BD4267F22E1001427A3 /* StorageManager.swift */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		959D6BD7267F3223001427A3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				95887472267DE4C400BDAA50 /* User.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		959D6BD8267F3236001427A3 /* Login-Register */ = {
+			isa = PBXGroup;
+			children = (
+				9545D300267DD04B00AAF516 /* LoginViewController.swift */,
+				9545D302267DD05500AAF516 /* RegisterViewController.swift */,
+			);
+			path = "Login-Register";
+			sourceTree = "<group>";
+		};
+		959D6BD9267F326F001427A3 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				95B924D9267CDA4D00D8F44C /* Main.storyboard */,
+				95B924DE267CDA4F00D8F44C /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
+			sourceTree = "<group>";
+		};
+		959D6BDA267F3299001427A3 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				959D6BD8267F3236001427A3 /* Login-Register */,
+				9545D304267DD06F00AAF516 /* HomeViewController.swift */,
+				9545D30F267DD33C00AAF516 /* ChatViewController.swift */,
+				9545D308267DD0E200AAF516 /* ProfileViewController.swift */,
+				9545D30A267DD0F700AAF516 /* UserViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		959D6BDB267F32DA001427A3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				95B924D3267CDA4D00D8F44C /* AppDelegate.swift */,
+				95B924D5267CDA4D00D8F44C /* SceneDelegate.swift */,
+				95B924DC267CDA4F00D8F44C /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		95B924C7267CDA4D00D8F44C = {
 			isa = PBXGroup;
 			children = (
@@ -89,22 +146,13 @@
 		95B924D2267CDA4D00D8F44C /* GsSwiftSample */ = {
 			isa = PBXGroup;
 			children = (
-				95B924D3267CDA4D00D8F44C /* AppDelegate.swift */,
-				95B924D5267CDA4D00D8F44C /* SceneDelegate.swift */,
-				95B924D9267CDA4D00D8F44C /* Main.storyboard */,
-				9545D300267DD04B00AAF516 /* LoginViewController.swift */,
-				9545D302267DD05500AAF516 /* RegisterViewController.swift */,
-				9545D304267DD06F00AAF516 /* HomeViewController.swift */,
-				9545D30F267DD33C00AAF516 /* ChatViewController.swift */,
-				9545D308267DD0E200AAF516 /* ProfileViewController.swift */,
-				9545D30A267DD0F700AAF516 /* UserViewController.swift */,
-				95B924DC267CDA4F00D8F44C /* Assets.xcassets */,
-				95B924DE267CDA4F00D8F44C /* LaunchScreen.storyboard */,
+				959D6BDB267F32DA001427A3 /* Resources */,
+				959D6BDA267F3299001427A3 /* ViewControllers */,
+				959D6BD9267F326F001427A3 /* Storyboards */,
+				959D6BD6267F3216001427A3 /* Firebase */,
+				959D6BD7267F3223001427A3 /* Model */,
 				95B924E1267CDA4F00D8F44C /* Info.plist */,
 				9545D2FE267DCFED00AAF516 /* GoogleService-Info.plist */,
-				95887470267DE19100BDAA50 /* DatabaseManager.swift */,
-				959D6BD4267F22E1001427A3 /* StorageManager.swift */,
-				95887472267DE4C400BDAA50 /* User.swift */,
 			);
 			path = GsSwiftSample;
 			sourceTree = "<group>";
