@@ -11,7 +11,7 @@
         <!--Login-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="LoginViewController" customModule="GsSwiftSample" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginVC" id="BYZ-38-t0r" customClass="LoginViewController" customModule="GsSwiftSample" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -208,11 +208,46 @@
                             <constraint firstItem="rnq-nu-bOo" firstAttribute="centerY" secondItem="DeB-4G-F84" secondAttribute="centerY" id="oYo-rw-hyH"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="m96-rI-afa"/>
+                    <navigationItem key="navigationItem" id="m96-rI-afa">
+                        <barButtonItem key="rightBarButtonItem" title="マイページ" id="Zc1-W6-e2n">
+                            <connections>
+                                <segue destination="4pp-Tb-19P" kind="show" id="Txq-Yn-O3t"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="81k-av-66M" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="952.79999999999995" y="910.79460269865069"/>
+        </scene>
+        <!--Profile View Controller-->
+        <scene sceneID="CGV-iX-RQw">
+            <objects>
+                <viewController id="4pp-Tb-19P" customClass="ProfileViewController" customModule="GsSwiftSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="tvY-gL-hKM">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x7V-L7-wVD">
+                                <rect key="frame" x="175.66666666666666" y="448" width="77" height="30"/>
+                                <state key="normal" title="ログアウト"/>
+                                <connections>
+                                    <action selector="didTapLogout:" destination="4pp-Tb-19P" eventType="touchUpInside" id="Pa5-cH-K5B"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="SEE-tB-Oad"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="x7V-L7-wVD" firstAttribute="centerY" secondItem="tvY-gL-hKM" secondAttribute="centerY" id="gB0-A0-Nka"/>
+                            <constraint firstItem="x7V-L7-wVD" firstAttribute="centerX" secondItem="tvY-gL-hKM" secondAttribute="centerX" id="oSB-zZ-J47"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="IyA-Q8-pKY"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="da7-X9-cE6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1796" y="910"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="LE2-rS-CdG">
@@ -235,7 +270,6 @@
         <!--Navigation Controller-->
         <scene sceneID="i3m-fy-2O2">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="1pR-nv-bHR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="BIF-U6-JiE" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="DzJ-xz-d9w">
@@ -247,6 +281,7 @@
                         <segue destination="MFy-Mh-2Xj" kind="relationship" relationship="rootViewController" id="2IN-oF-5ds"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1pR-nv-bHR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="13.6" y="910.79460269865069"/>
         </scene>

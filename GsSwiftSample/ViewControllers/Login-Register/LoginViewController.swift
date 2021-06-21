@@ -17,6 +17,13 @@ class LoginViewController: UIViewController {
         super.viewDidLoad()
         emalTextField.delegate = self
         passwordTextField.delegate = self
+        let isLogin = UserDefaults.standard.bool(forKey: "isLoggedIn")
+        if isLogin {
+            let rootVC = storyboard?.instantiateViewController(identifier: "HomeVC") as! HomeViewController
+            let navVC = UINavigationController(rootViewController: rootVC)
+            navVC.modalPresentationStyle = .fullScreen
+            present(navVC, animated: true, completion: nil)
+        }
     }
     
     @IBAction func didTapLogin(_ sender: Any) {
@@ -30,13 +37,13 @@ class LoginViewController: UIViewController {
             let navVC = UINavigationController(rootViewController: rootVC)
             navVC.modalPresentationStyle = .fullScreen
             self?.present(navVC, animated: true, completion: nil)
+            UserDefaults.standard.setValue(true, forKey: "isLoggedIn")
         }
     }
     
     @IBAction func moveToRegister(_ sender: Any) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "RegisterVC") as! RegisterViewController
         self.navigationController?.pushViewController(vc, animated: true)
-        vc.modalPresentationStyle = .fullScreen
     }
     
 }

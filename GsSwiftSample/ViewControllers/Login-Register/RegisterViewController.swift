@@ -43,7 +43,7 @@ class RegisterViewController: UIViewController, UIImagePickerControllerDelegate,
                 let navVC = UINavigationController(rootViewController: rootVC)
                 navVC.modalPresentationStyle = .fullScreen
                 self?.present(navVC, animated: true, completion: nil)
-                
+                UserDefaults.standard.setValue(true, forKey: "isLoggedIn")
             case .failure(let error):
                 let alert = UIAlertController(title: "エラー", message: error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
