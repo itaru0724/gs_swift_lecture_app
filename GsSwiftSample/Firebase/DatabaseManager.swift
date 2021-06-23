@@ -14,19 +14,19 @@ final class DatabaseManager {
     private init() {}
     let db = Firestore.firestore()
     
-    public func registerUser(user: User, photo: UIImage?, completion: @escaping (Result<Bool, Error>) -> Void){
-        Auth.auth().createUser(withEmail: user.email, password: user.password) { [weak self] authResult, error in
+    public func registerUser(name: String, email: String, password: String, photo: UIImage?, completion: @escaping (Result<Bool, Error>) -> Void){
+        Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
             guard authResult != nil, error == nil else {
                 print("Error creating user")
                 UserDefaults.standard.setValue(false, forKey: "isLogin")
                 completion(.failure(RegisterError.AuthError))
                 return
             }
-            UserDefaults.standard.setValue("\(user.name)", forKey: "login_user_name")
+            UserDefaults.standard.setValue("\(email)", forKey: "logged_user_email")
             
             let user = [
-                "name" : user.name,
-                "email" : user.email
+                "name" : name,
+                "email" : email
             ]
             
             var ref: DocumentReference? = nil
@@ -42,7 +42,7 @@ final class DatabaseManager {
                     
                     guard let image = photo, let data = image.pngData() else {
                         completion(.success(true))
-                        UserDefaults.standard.setValue(true, forKey: "isLogin")
+                        UserDefaults.standard.setValue(email, forKey: "logged_user_email")
                         return
                     }
                     StorageManager.shared.uploadProfilePicture(with: data, fileName: "\(ref!.documentID)_profile_picture.png") { result in
@@ -52,7 +52,7 @@ final class DatabaseManager {
                                 "photoURL" : url
                             ])
                             completion(.success(true))
-                            UserDefaults.standard.setValue(true, forKey: "isLogin")
+                            UserDefaults.standard.setValue(email, forKey: "logged_user_email")
                         case .failure(_):
                             print("Couldn't get profile url")
                             completion(.failure(RegisterError.StorageError))
@@ -63,6 +63,33 @@ final class DatabaseManager {
         }
     }
     
+    public func fetchUser(completion: @escaping (Result<[User], Error>) -> Void){
+        var usersArray = [User]()
+        guard let loggedInUserEmail = UserDefaults.standard.value(forKey: "logged_user_email") else {
+            return completion(.failure(FetchUserError.NoEmailRegistered))
+        }
+        
+        //マッチしたユーザーも除く
+        db.collection("users").whereField("email", isNotEqualTo: loggedInUserEmail).getDocuments { querySnapshot, error in
+            guard let querySnapshot = querySnapshot, error == nil else {
+                return completion(.failure(FetchUserError.FailedToFetchUser))
+            }
+            for document in querySnapshot.documents {
+                let data = document.data()
+                print(data)
+                guard let name = data["name"] as? String,
+                      let id = data["firestoreId"] as? String,
+                      let photoURL = data["photoURL"] as? String else {
+                    return completion(.failure(FetchUserError.FailedToParse))
+                }
+                let user = User(id: id, name: name, photoURL: photoURL)
+                print(user)
+                usersArray.append(user)
+            }
+            completion(.success(usersArray))
+        }
+    }
+    
 }
 
 enum RegisterError : Error {
@@ -70,3 +97,10 @@ enum RegisterError : Error {
     case FirestoreError
     case StorageError
 }
+
+enum FetchUserError : Error {
+    case NoEmailRegistered
+    case FailedToFetchUser
+    case FailedToParse
+}
+

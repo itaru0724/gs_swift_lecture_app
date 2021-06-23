@@ -26,8 +26,8 @@ class LoginViewController: UIViewController {
     }
     
     @IBAction func didTapLogin(_ sender: Any) {
-        guard let email = emalTextField.text,
-              let password = passwordTextField.text
+        guard let email = emalTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         else { return }
         
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in

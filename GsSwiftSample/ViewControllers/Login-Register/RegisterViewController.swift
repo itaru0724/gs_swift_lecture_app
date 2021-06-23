@@ -31,18 +31,17 @@ class RegisterViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     @IBAction func didTapRegister(_ sender: Any) {
-        guard let name = nameTextField.text,
-              let email = emailTextField.text,
-              let password = passwordTextField.text
+        guard let name = nameTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
+              let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         else { return }
-        let user = User(name: name, email: email, password: password, photoURL: nil)
-        DatabaseManager.shared.registerUser(user: user, photo: profileImageView.image, completion: { [weak self] result in
+        DatabaseManager.shared.registerUser(name: name, email: email, password: password, photo: profileImageView.image, completion: { [weak self] result in
             switch result{
             case .success(_):
                 let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
                 tabVC.modalPresentationStyle = .fullScreen
                 self?.present(tabVC, animated: true, completion: nil)
-                UserDefaults.standard.setValue(user.email, forKey: "logged_user_email")
+                UserDefaults.standard.setValue(email, forKey: "logged_user_email")
             case .failure(let error):
                 let alert = UIAlertController(title: "エラー", message: error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

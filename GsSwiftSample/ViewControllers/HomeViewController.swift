@@ -6,27 +6,44 @@
 //
 
 import UIKit
+import SDWebImage
 
 class HomeViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    
+    var users = [User]()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        DatabaseManager.shared.fetchUser { [weak self] result in
+            print(result)
+            switch result{
+            case .success(let users):
+                DispatchQueue.main.async {
+                    self?.users = users
+                    self?.tableView.reloadData()
+                }
+            case .failure(let error):
+                print(error)
+            }
+        }
     }
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return users.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
-        cell.textLabel?.text = "Yurina Hirate"
+        let user = users[indexPath.row]
+        cell.textLabel?.text = user.name
+        cell.imageView?.sd_setImage(with: URL(string: user.photoURL!), completed: nil)
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        //いいねをする⇆キャンセル
+    }
 }

@@ -9,8 +9,7 @@ import Foundation
 import UIKit
 
 struct User {
+    let id: String
     let name: String
-    let email: String
-    let password: String
-    let photoURL: URL?
+    let photoURL: String?
 }
