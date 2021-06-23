@@ -42,7 +42,7 @@ class RegisterViewController: UIViewController, UIImagePickerControllerDelegate,
                 let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
                 tabVC.modalPresentationStyle = .fullScreen
                 self?.present(tabVC, animated: true, completion: nil)
-                UserDefaults.standard.setValue(true, forKey: "isLoggedIn")
+                UserDefaults.standard.setValue(user.email, forKey: "logged_user_email")
             case .failure(let error):
                 let alert = UIAlertController(title: "エラー", message: error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

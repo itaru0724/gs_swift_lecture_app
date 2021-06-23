@@ -25,7 +25,7 @@ class ProfileViewController: UIViewController {
         let firebaseAuth = Auth.auth()
         do {
             try firebaseAuth.signOut()
-            UserDefaults.standard.setValue(false, forKey: "isLoggedIn")
+            UserDefaults.standard.setValue(nil, forKey: "logged_user_email")
             let rootVC = storyboard?.instantiateViewController(identifier: "LoginVC") as! LoginViewController
             let navVC = UINavigationController(rootViewController: rootVC)
             navVC.modalPresentationStyle = .fullScreen

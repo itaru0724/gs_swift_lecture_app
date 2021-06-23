@@ -59,7 +59,7 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" systemColor="systemYellowColor"/>
                         <constraints>
                             <constraint firstItem="0bI-m3-02X" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="HSN-Bt-AsQ"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0bI-m3-02X" secondAttribute="trailing" constant="20" id="XG0-9M-oKD"/>
@@ -147,7 +147,7 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="FLE-rg-mqf"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" systemColor="systemYellowColor"/>
                         <constraints>
                             <constraint firstItem="tEr-D6-6wV" firstAttribute="top" secondItem="piE-oR-8hO" secondAttribute="bottom" constant="10" id="0T7-Ik-NSB"/>
                             <constraint firstItem="tEr-D6-6wV" firstAttribute="leading" secondItem="FLE-rg-mqf" secondAttribute="leading" constant="20" id="1O6-My-Gja"/>
@@ -392,6 +392,9 @@
         </systemColor>
         <systemColor name="systemOrangeColor">
             <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemYellowColor">
+            <color red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>
