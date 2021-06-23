@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9535F1682682BA4700D02C5E /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9535F1672682BA4700D02C5E /* TabBarViewController.swift */; };
+		9535F16A2682BD8400D02C5E /* MatchListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9535F1692682BD8400D02C5E /* MatchListViewController.swift */; };
 		9545D2FF267DCFED00AAF516 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9545D2FE267DCFED00AAF516 /* GoogleService-Info.plist */; };
 		9545D301267DD04B00AAF516 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D300267DD04B00AAF516 /* LoginViewController.swift */; };
 		9545D303267DD05500AAF516 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D302267DD05500AAF516 /* RegisterViewController.swift */; };
@@ -27,6 +29,8 @@
 
 /* Begin PBXFileReference section */
 		0CFDA8B6825950EB02FD8A77 /* Pods_GsSwiftSample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_GsSwiftSample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9535F1672682BA4700D02C5E /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
+		9535F1692682BD8400D02C5E /* MatchListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchListViewController.swift; sourceTree = "<group>"; };
 		9545D2FE267DCFED00AAF516 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		9545D300267DD04B00AAF516 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		9545D302267DD05500AAF516 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
@@ -108,6 +112,8 @@
 			children = (
 				959D6BD8267F3236001427A3 /* Login-Register */,
 				9545D304267DD06F00AAF516 /* HomeViewController.swift */,
+				9535F1672682BA4700D02C5E /* TabBarViewController.swift */,
+				9535F1692682BD8400D02C5E /* MatchListViewController.swift */,
 				9545D30F267DD33C00AAF516 /* ChatViewController.swift */,
 				9545D308267DD0E200AAF516 /* ProfileViewController.swift */,
 				9545D30A267DD0F700AAF516 /* UserViewController.swift */,
@@ -285,11 +291,13 @@
 				95887471267DE19100BDAA50 /* DatabaseManager.swift in Sources */,
 				959D6BD5267F22E1001427A3 /* StorageManager.swift in Sources */,
 				9545D309267DD0E200AAF516 /* ProfileViewController.swift in Sources */,
+				9535F1682682BA4700D02C5E /* TabBarViewController.swift in Sources */,
 				9545D305267DD06F00AAF516 /* HomeViewController.swift in Sources */,
 				9545D301267DD04B00AAF516 /* LoginViewController.swift in Sources */,
 				95B924D4267CDA4D00D8F44C /* AppDelegate.swift in Sources */,
 				95B924D6267CDA4D00D8F44C /* SceneDelegate.swift in Sources */,
 				9545D310267DD33C00AAF516 /* ChatViewController.swift in Sources */,
+				9535F16A2682BD8400D02C5E /* MatchListViewController.swift in Sources */,
 				95887473267DE4C400BDAA50 /* User.swift in Sources */,
 				9545D303267DD05500AAF516 /* RegisterViewController.swift in Sources */,
 			);

@@ -19,10 +19,9 @@ class LoginViewController: UIViewController {
         passwordTextField.delegate = self
         let isLogin = UserDefaults.standard.bool(forKey: "isLoggedIn")
         if isLogin {
-            let rootVC = storyboard?.instantiateViewController(identifier: "HomeVC") as! HomeViewController
-            let navVC = UINavigationController(rootViewController: rootVC)
-            navVC.modalPresentationStyle = .fullScreen
-            present(navVC, animated: true, completion: nil)
+            let tabVC = storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
+            tabVC.modalPresentationStyle = .fullScreen
+            present(tabVC, animated: true, completion: nil)
         }
     }
     
@@ -33,10 +32,9 @@ class LoginViewController: UIViewController {
         
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] _, error in
             guard error == nil else {return}
-            let rootVC = self?.storyboard?.instantiateViewController(identifier: "HomeVC") as! HomeViewController
-            let navVC = UINavigationController(rootViewController: rootVC)
-            navVC.modalPresentationStyle = .fullScreen
-            self?.present(navVC, animated: true, completion: nil)
+            let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
+            tabVC.modalPresentationStyle = .fullScreen
+            self?.present(tabVC, animated: true, completion: nil)
             UserDefaults.standard.setValue(true, forKey: "isLoggedIn")
         }
     }

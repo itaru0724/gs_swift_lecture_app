@@ -39,10 +39,9 @@ class RegisterViewController: UIViewController, UIImagePickerControllerDelegate,
         DatabaseManager.shared.registerUser(user: user, photo: profileImageView.image, completion: { [weak self] result in
             switch result{
             case .success(_):
-                let rootVC = self?.storyboard?.instantiateViewController(identifier: "HomeVC") as! HomeViewController
-                let navVC = UINavigationController(rootViewController: rootVC)
-                navVC.modalPresentationStyle = .fullScreen
-                self?.present(navVC, animated: true, completion: nil)
+                let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
+                tabVC.modalPresentationStyle = .fullScreen
+                self?.present(tabVC, animated: true, completion: nil)
                 UserDefaults.standard.setValue(true, forKey: "isLoggedIn")
             case .failure(let error):
                 let alert = UIAlertController(title: "エラー", message: error.localizedDescription, preferredStyle: .alert)
