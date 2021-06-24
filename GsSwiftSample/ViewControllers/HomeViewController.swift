@@ -38,12 +38,17 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ListCell", for: indexPath)
         let user = users[indexPath.row]
         cell.textLabel?.text = user.name
-        cell.imageView?.sd_setImage(with: URL(string: user.photoURL!), completed: nil)
+        cell.imageView?.sd_setImage(with: URL(string: user.photoURL!), completed: { (_, error, _, _) in
+          if error == nil {
+            cell.setNeedsLayout()//これがないと普通のcellで画像が一発で表示されない
+          }
+        })
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         //いいねをする⇆キャンセル
+        //cellの色で
     }
 }
