@@ -12,8 +12,7 @@ class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        //プロフィールは宿題にする！！！！！！！！！！！！１
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -25,7 +24,7 @@ class ProfileViewController: UIViewController {
         let firebaseAuth = Auth.auth()
         do {
             try firebaseAuth.signOut()
-            UserDefaults.standard.setValue(nil, forKey: "logged_user_email")
+            UserDefaults.standard.setValue(nil, forKey: "loggedInUserId")
             let rootVC = storyboard?.instantiateViewController(identifier: "LoginVC") as! LoginViewController
             let navVC = UINavigationController(rootViewController: rootVC)
             navVC.modalPresentationStyle = .fullScreen

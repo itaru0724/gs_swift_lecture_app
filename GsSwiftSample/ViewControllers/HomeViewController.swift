@@ -15,7 +15,7 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         DatabaseManager.shared.fetchUser { [weak self] result in
-            print(result)
+//            print(result)
             switch result{
             case .success(let users):
                 DispatchQueue.main.async {
@@ -48,6 +48,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let likeUserId = users[indexPath.row].id
         //いいねをする⇆キャンセル
         //cellの色で
     }

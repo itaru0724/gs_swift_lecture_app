@@ -18,11 +18,9 @@ final class DatabaseManager {
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
             guard authResult != nil, error == nil else {
                 print("Error creating user")
-                UserDefaults.standard.setValue(false, forKey: "isLogin")
                 completion(.failure(RegisterError.AuthError))
                 return
             }
-            UserDefaults.standard.setValue("\(email)", forKey: "logged_user_email")
             
             let user = [
                 "name" : name,
@@ -42,7 +40,9 @@ final class DatabaseManager {
                     
                     guard let image = photo, let data = image.pngData() else {
                         completion(.success(true))
-                        UserDefaults.standard.setValue(email, forKey: "logged_user_email")
+                        self?.getLoggedInUserId(loggedInUserEmail: email) { id in
+                            UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+                        }
                         return
                     }
                     StorageManager.shared.uploadProfilePicture(with: data, fileName: "\(ref!.documentID)_profile_picture.png") { result in
@@ -52,7 +52,9 @@ final class DatabaseManager {
                                 "photoURL" : url
                             ])
                             completion(.success(true))
-                            UserDefaults.standard.setValue(email, forKey: "logged_user_email")
+                            self?.getLoggedInUserId(loggedInUserEmail: email) { id in
+                                UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+                            }
                         case .failure(_):
                             print("Couldn't get profile url")
                             completion(.failure(RegisterError.StorageError))
@@ -63,14 +65,30 @@ final class DatabaseManager {
         }
     }
     
+    public func getLoggedInUserId(loggedInUserEmail: String, completion: @escaping (String)->Void){
+        db.collection("users").whereField("email", isEqualTo: loggedInUserEmail)
+            .getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        print("\(document.documentID) => \(document.data())")
+                        guard let id = document.data()["firestoreId"] as? String else {return}
+                        UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+                        completion(id)
+                    }
+                }
+        }
+    }
+    
     public func fetchUser(completion: @escaping (Result<[User], Error>) -> Void){
         var usersArray = [User]()
-        guard let loggedInUserEmail = UserDefaults.standard.value(forKey: "logged_user_email") else {
-            return completion(.failure(FetchUserError.NoEmailRegistered))
+        guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") else {
+            return completion(.failure(FetchUserError.FailedToGetId))
         }
         
         //マッチしたユーザーも除く
-        db.collection("users").whereField("email", isNotEqualTo: loggedInUserEmail).getDocuments { querySnapshot, error in
+        db.collection("users").whereField("firestoreId", isNotEqualTo: loggedInUserId).getDocuments { querySnapshot, error in
             guard let querySnapshot = querySnapshot, error == nil else {
                 return completion(.failure(FetchUserError.FailedToFetchUser))
             }
@@ -90,6 +108,26 @@ final class DatabaseManager {
         }
     }
     
+    public func sendLikeOrCancelLike(likeUserId: String, completion: @escaping (Bool) -> Void){
+        guard let myUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as? String else {
+            return completion(false)
+        }
+        // Add a new document with a generated id.
+        var ref: DocumentReference? = nil
+        ref = db.collection("likes").addDocument(data: [
+            "myUserId": myUserId,
+            "likeUserId": likeUserId
+        ]) { err in
+            if let err = err {
+                print("Error adding document: \(err)")
+                completion(false)
+            } else {
+                print("Document added with ID: \(ref!.documentID)")
+                completion(true)
+            }
+        }
+    }
+    
 }
 
 enum RegisterError : Error {
@@ -99,8 +137,7 @@ enum RegisterError : Error {
 }
 
 enum FetchUserError : Error {
-    case NoEmailRegistered
+    case FailedToGetId
     case FailedToFetchUser
     case FailedToParse
 }
-

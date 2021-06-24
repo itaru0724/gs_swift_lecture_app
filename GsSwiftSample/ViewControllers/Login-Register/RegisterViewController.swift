@@ -38,10 +38,12 @@ class RegisterViewController: UIViewController, UIImagePickerControllerDelegate,
         DatabaseManager.shared.registerUser(name: name, email: email, password: password, photo: profileImageView.image, completion: { [weak self] result in
             switch result{
             case .success(_):
-                let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
-                tabVC.modalPresentationStyle = .fullScreen
-                self?.present(tabVC, animated: true, completion: nil)
-                UserDefaults.standard.setValue(email, forKey: "logged_user_email")
+                DatabaseManager.shared.getLoggedInUserId(loggedInUserEmail: email) { id in
+                    UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+                    let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
+                    tabVC.modalPresentationStyle = .fullScreen
+                    self?.present(tabVC, animated: true, completion: nil)
+                }
             case .failure(let error):
                 let alert = UIAlertController(title: "エラー", message: error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))

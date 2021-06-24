@@ -18,7 +18,7 @@ class LoginViewController: UIViewController {
         emalTextField.delegate = self
         passwordTextField.delegate = self
         
-        if UserDefaults.standard.value(forKey: "logged_user_email") != nil {
+        if UserDefaults.standard.value(forKey: "loggedInUserId") != nil {
             let tabVC = storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
             tabVC.modalPresentationStyle = .fullScreen
             present(tabVC, animated: true, completion: nil)
@@ -30,13 +30,14 @@ class LoginViewController: UIViewController {
               let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         else { return }
         
-        Auth.auth().signIn(withEmail: email, password: password) { [weak self] authResult, error in
-            guard let authResult = authResult, error == nil else {return}
-            
-            let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
-            tabVC.modalPresentationStyle = .fullScreen
-            self?.present(tabVC, animated: true, completion: nil)
-            UserDefaults.standard.setValue(authResult.user.email!, forKey: "logged_user_email")
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] _, error in
+            guard error == nil else {return}
+            DatabaseManager.shared.getLoggedInUserId(loggedInUserEmail: email) { id in
+                UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+                let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
+                tabVC.modalPresentationStyle = .fullScreen
+                self?.present(tabVC, animated: true, completion: nil)
+            }
         }
     }
     
