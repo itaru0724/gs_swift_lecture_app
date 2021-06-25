@@ -136,13 +136,11 @@ final class DatabaseManager {
                     }
                 }
         }
-        
-        
-        // Add a new document with a generated id.
-//        var ref: DocumentReference? = nil
-//        ref =
     }
     
+    public func getLikeStatusColor(){
+        
+    }
 }
 
 enum RegisterError : Error {
