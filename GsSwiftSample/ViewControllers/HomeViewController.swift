@@ -14,8 +14,8 @@ class HomeViewController: UIViewController {
     var users = [User]()
     override func viewDidLoad() {
         super.viewDidLoad()
+        //マッチしたユーザーは表示させないのは宿題に・・・
         DatabaseManager.shared.fetchUser { [weak self] result in
-//            print(result)
             switch result{
             case .success(let users):
                 DispatchQueue.main.async {
@@ -50,10 +50,15 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         let likeUserId = users[indexPath.row].id
         DatabaseManager.shared.sendLikeOrCancelLike(likeUserId: likeUserId) { [weak self] result in
-            let title = result ? "いいね" : "いいねをキャンセル"
-            let alert = UIAlertController(title: title, message: "\(title)しました。", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self?.present(alert, animated: true)
+            switch result {
+            case .success(let title):
+                let alert = UIAlertController(title: title, message: "\(title)しました。", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                self?.present(alert, animated: true)
+            case .failure(let error):
+                print(error)
+            }
+           
         }
     }
 }
