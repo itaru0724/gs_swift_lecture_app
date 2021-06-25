@@ -112,20 +112,35 @@ final class DatabaseManager {
         guard let myUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as? String else {
             return completion(false)
         }
-        // Add a new document with a generated id.
-        var ref: DocumentReference? = nil
-        ref = db.collection("likes").addDocument(data: [
-            "myUserId": myUserId,
-            "likeUserId": likeUserId
-        ]) { err in
-            if let err = err {
-                print("Error adding document: \(err)")
-                completion(false)
-            } else {
-                print("Document added with ID: \(ref!.documentID)")
-                completion(true)
-            }
+        db.collection("likes").whereField("myUserId", isEqualTo: myUserId).whereField("likeUserId", isEqualTo: likeUserId)
+            .getDocuments() { [weak self](querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else if querySnapshot?.documents.isEmpty == true {
+                    self?.db.collection("likes").addDocument(data: [
+                        "myUserId": myUserId,
+                        "likeUserId": likeUserId
+                    ]) { err in
+                        if let err = err {
+                            print("Error adding document: \(err)")
+                        } else {
+                            completion(true)
+                        }
+                    }
+                } else {
+                    for document in querySnapshot!.documents {
+                        print("\(document.documentID) => \(document.data())")
+                        self?.db.collection("likes").document(document.documentID).delete()
+                        completion(false)
+                        return
+                    }
+                }
         }
+        
+        
+        // Add a new document with a generated id.
+//        var ref: DocumentReference? = nil
+//        ref =
     }
     
 }

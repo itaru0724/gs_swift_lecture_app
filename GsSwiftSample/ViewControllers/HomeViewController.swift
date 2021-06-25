@@ -49,7 +49,10 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let likeUserId = users[indexPath.row].id
-        //いいねをする⇆キャンセル
+        DatabaseManager.shared.sendLikeOrCancelLike(likeUserId: likeUserId) { result in
+            let status = result ? "いいね" : "いいねキャンセル"
+            print(status)
+        }
         //cellの色で
     }
 }
