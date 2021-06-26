@@ -231,6 +231,41 @@ final class DatabaseManager {
             
         }
     }
+    
+    func sendMessage(text: String, matchId: String, senderId: String, completion: @escaping (Bool) -> Void ){
+        let message = [
+            "text" : text,
+            "messageId" : UUID().uuidString,
+            "senderId": senderId,
+            "sentDate" : Date()
+        ] as [String : Any]
+        
+        db.collection("messages").document(matchId).collection("message").addDocument(data: message){ err in
+            if let err = err {
+                print("Error writing document: \(err)")
+                completion(false)
+            } else {
+                print("Document successfully written!")
+                completion(true)
+            }
+        }
+
+    }
+    
+    func getMatchId(likeUserId: String, completion: @escaping (String) -> Void){
+        guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") else { return }
+        db.collection("matches").whereField("users", arrayContainsAny: [loggedInUserId, likeUserId]).limit(to: 1)
+            .getDocuments { querySnapshot, error in
+                if let err = error  {
+                    print("Error getting documents: \(err)")
+                } else {
+                    for document in querySnapshot!.documents {
+                        print("\(document.documentID) => \(document.data())")
+                        completion(document.documentID)
+                    }
+                }
+            }
+    }
 }
 
 enum RegisterError : Error {

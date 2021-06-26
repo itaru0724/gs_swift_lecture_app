@@ -8,6 +8,7 @@
 import UIKit
 import MessageKit
 import SDWebImage
+import InputBarAccessoryView
 
 struct Sender: SenderType {
     var senderId: String
@@ -24,11 +25,17 @@ struct Message : MessageType {
 class ChatViewController: MessagesViewController, MessagesLayoutDelegate, MessagesDisplayDelegate {
     
     var likeUser: User!
+    var messages = [Message]()
+    var matchId: String!
     
     let currnetUser = Sender(senderId: UserDefaults.standard.value(forKey: "loggedInUserId") as! String, displayName: "Me")
-    let otherUser = Sender(senderId: "2", displayName: "Yurina Hirate")
-    
-    var messages = [Message]()
+    let dateFormatter:DateFormatter = DateFormatter()
+        
+    lazy var formatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +43,9 @@ class ChatViewController: MessagesViewController, MessagesLayoutDelegate, Messag
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
+        messageInputBar.delegate = self
+        
+        let otherUser = Sender(senderId: likeUser.id, displayName: likeUser.name)
         
         messages.append(Message(sender: currnetUser,
                                 messageId: "1",
@@ -43,20 +53,8 @@ class ChatViewController: MessagesViewController, MessagesLayoutDelegate, Messag
                                 kind: .text("Hello")))
         messages.append(Message(sender: otherUser,
                                 messageId: "2",
-                                sentDate: Date().addingTimeInterval(-70000),
-                                kind: .text("How are you")))
-        messages.append(Message(sender: currnetUser,
-                                messageId: "3",
-                                sentDate: Date().addingTimeInterval(-60000),
-                                kind: .text("Good, you?")))
-        messages.append(Message(sender: otherUser,
-                                messageId: "4",
-                                sentDate: Date().addingTimeInterval(-50000),
-                                kind: .text("its hot")))
-        messages.append(Message(sender: currnetUser,
-                                messageId: "5",
-                                sentDate: Date().addingTimeInterval(-30000),
-                                kind: .text("last message")))
+                                sentDate: Date().addingTimeInterval(-86300),
+                                kind: .text("Hello")))
     }
 }
 
@@ -72,4 +70,27 @@ extension ChatViewController : MessagesDataSource{
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
         return messages.count
     }
+}
+
+extension ChatViewController: InputBarAccessoryViewDelegate {
+    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+        guard !text.replacingOccurrences(of: " ", with: "").isEmpty else {return}
+        DatabaseManager.shared.sendMessage(text: text, matchId: matchId, senderId: currnetUser.senderId) { success in
+            let result = success ? "送信に成功" : "送信に失敗"
+            print(result)
+        }
+    }
+    
+    func inputBar(_ inputBar: InputBarAccessoryView, didChangeIntrinsicContentTo size: CGSize) {
+        
+    }
+    
+    func inputBar(_ inputBar: InputBarAccessoryView, textViewTextDidChangeTo text: String) {
+        
+    }
+    
+    func inputBar(_ inputBar: InputBarAccessoryView, didSwipeTextViewWith gesture: UISwipeGestureRecognizer) {
+        
+    }
+    
 }
