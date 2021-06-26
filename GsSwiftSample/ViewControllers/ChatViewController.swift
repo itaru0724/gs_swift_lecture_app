@@ -11,6 +11,8 @@ import CoreLocation
 
 class ChatViewController: MessagesViewController, MessagesLayoutDelegate, MessagesDisplayDelegate {
     
+    var likeUser: User?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 //        messagesCollectionView.messagesDataSource = self

@@ -222,7 +222,7 @@
             </objects>
             <point key="canvasLocation" x="15" y="910"/>
         </scene>
-        <!--Home View Controller-->
+        <!--ユーザー-->
         <scene sceneID="zsK-Mu-RLP">
             <objects>
                 <viewController storyboardIdentifier="HomeVC" id="MFy-Mh-2Xj" customClass="HomeViewController" customModule="GsSwiftSample" customModuleProvider="target" sceneMemberID="viewController">
@@ -258,7 +258,7 @@
                             <constraint firstItem="qSf-jW-K5R" firstAttribute="bottom" secondItem="OPs-8G-iRM" secondAttribute="bottom" id="jHC-XY-MJf"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="m96-rI-afa">
+                    <navigationItem key="navigationItem" title="ユーザー" id="m96-rI-afa">
                         <barButtonItem key="rightBarButtonItem" title="マイページ" id="Zc1-W6-e2n">
                             <connections>
                                 <segue destination="4pp-Tb-19P" kind="show" id="Txq-Yn-O3t"/>
@@ -337,7 +337,7 @@
             </objects>
             <point key="canvasLocation" x="15" y="1635"/>
         </scene>
-        <!--Match List View Controller-->
+        <!--マッチユーザー-->
         <scene sceneID="DP9-8X-IDp">
             <objects>
                 <viewController storyboardIdentifier="MatchListVC" id="AzK-Uk-GRM" customClass="MatchListViewController" customModule="GsSwiftSample" customModuleProvider="target" sceneMemberID="viewController">
@@ -373,7 +373,7 @@
                             <constraint firstItem="UiN-Ap-uRk" firstAttribute="bottom" secondItem="4sq-Jg-e9C" secondAttribute="bottom" id="y45-oe-9Ez"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="tWK-iw-2gk"/>
+                    <navigationItem key="navigationItem" title="マッチユーザー" id="tWK-iw-2gk"/>
                     <connections>
                         <outlet property="tableView" destination="UiN-Ap-uRk" id="epv-AC-cAR"/>
                     </connections>
@@ -381,6 +381,22 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hiu-Qw-g6E" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="951.86915887850466" y="1634.7732181425488"/>
+        </scene>
+        <!--Chat View Controller-->
+        <scene sceneID="QTF-yS-XRk">
+            <objects>
+                <viewController storyboardIdentifier="ChatVC" id="5EI-f0-ihu" customClass="ChatViewController" customModule="GsSwiftSample" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Xno-2l-fES">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="8OD-oh-Xsc"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="xro-El-0mo"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="GqW-Wm-Ijg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1796" y="1635"/>
         </scene>
     </scenes>
     <resources>

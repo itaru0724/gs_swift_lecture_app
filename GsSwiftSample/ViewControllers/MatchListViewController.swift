@@ -46,4 +46,11 @@ extension MatchListViewController: UITableViewDelegate, UITableViewDataSource {
         })
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let vc = storyboard?.instantiateViewController(withIdentifier: "ChatVC") as! ChatViewController
+        vc.likeUser = users[indexPath.row]
+        self.navigationController?.pushViewController(vc, animated: true)
+    }
 }
