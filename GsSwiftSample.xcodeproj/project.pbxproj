@@ -14,7 +14,6 @@
 		9545D303267DD05500AAF516 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D302267DD05500AAF516 /* RegisterViewController.swift */; };
 		9545D305267DD06F00AAF516 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D304267DD06F00AAF516 /* HomeViewController.swift */; };
 		9545D309267DD0E200AAF516 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D308267DD0E200AAF516 /* ProfileViewController.swift */; };
-		9545D30B267DD0F700AAF516 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D30A267DD0F700AAF516 /* UserViewController.swift */; };
 		9545D310267DD33C00AAF516 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9545D30F267DD33C00AAF516 /* ChatViewController.swift */; };
 		95887471267DE19100BDAA50 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95887470267DE19100BDAA50 /* DatabaseManager.swift */; };
 		95887473267DE4C400BDAA50 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95887472267DE4C400BDAA50 /* User.swift */; };
@@ -36,7 +35,6 @@
 		9545D302267DD05500AAF516 /* RegisterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		9545D304267DD06F00AAF516 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		9545D308267DD0E200AAF516 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		9545D30A267DD0F700AAF516 /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		9545D30F267DD33C00AAF516 /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		95887470267DE19100BDAA50 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		95887472267DE4C400BDAA50 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
@@ -116,7 +114,6 @@
 				9535F1692682BD8400D02C5E /* MatchListViewController.swift */,
 				9545D30F267DD33C00AAF516 /* ChatViewController.swift */,
 				9545D308267DD0E200AAF516 /* ProfileViewController.swift */,
-				9545D30A267DD0F700AAF516 /* UserViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -287,7 +284,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9545D30B267DD0F700AAF516 /* UserViewController.swift in Sources */,
 				95887471267DE19100BDAA50 /* DatabaseManager.swift in Sources */,
 				959D6BD5267F22E1001427A3 /* StorageManager.swift in Sources */,
 				9545D309267DD0E200AAF516 /* ProfileViewController.swift in Sources */,

@@ -42,6 +42,10 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             cell.setNeedsLayout()//これがないと普通のcellで画像が一発で表示されない
           }
         })
+        DatabaseManager.shared.likeAlready(likeUserId: user.id) { liked in
+            cell.backgroundColor = liked ? .systemYellow : .systemBackground
+            tableView.reloadData()
+        }
         return cell
     }
     

@@ -80,10 +80,8 @@ final class DatabaseManager {
                 }
             }
     }
-}
-
-//MARK: - ユーザー取得
-extension DatabaseManager {
+    
+    //MARK: - ユーザー取得
     public func fetchUser(completion: @escaping (Result<[User], Error>) -> Void){
         var matchUserArray = [User]()
         var usersArray = [User]()
@@ -234,11 +232,23 @@ extension DatabaseManager {
                 }
             }
     }
-}
-
-
-//MARK: - メッセージ関連
-extension DatabaseManager {
+    
+    func likeAlready(likeUserId: String, completion: @escaping (Bool) -> Void ) {
+        guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") else { return }
+        db.collection("likes")
+            .whereField("myUserId", isEqualTo: loggedInUserId)
+            .whereField("likeUserId", isEqualTo: likeUserId)
+            .limit(to: 1).getDocuments {(querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else if querySnapshot?.documents.count == 0{
+                    completion(false)
+                } else {
+                    completion(true)
+                }
+        }
+    }
+    //MARK: - メッセージ関連
     func sendMessage(text: String, matchId: String, senderId: String, completion: @escaping (Bool) -> Void ){
         let message = [
             "text" : text,
