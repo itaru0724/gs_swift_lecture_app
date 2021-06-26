@@ -14,6 +14,10 @@ class HomeViewController: UIViewController {
     var users = [User]()
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         DatabaseManager.shared.fetchUser { [weak self] result in
             switch result{
             case .success(let users):
@@ -25,6 +29,12 @@ class HomeViewController: UIViewController {
                 print(error)
             }
         }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        users = [User]()
+        tableView.reloadData()
     }
 }
 
@@ -58,6 +68,18 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
                 let alert = UIAlertController(title: title, message: "\(title)しました。", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self?.present(alert, animated: true)
+                
+                if title == "マッチ" {
+                    DatabaseManager.shared.fetchUser { result in
+                        switch result {
+                        case .success(let users):
+                            self?.users = users
+                            tableView.reloadData()
+                        case .failure(_):
+                            print("マッチした後のエラーだよ")
+                        }
+                    }
+                }
             case .failure(let error):
                 print(error)
             }
