@@ -78,9 +78,12 @@ final class DatabaseManager {
                         completion(id)
                     }
                 }
-        }
+            }
     }
-    
+}
+
+//MARK: - ユーザー取得
+extension DatabaseManager {
     public func fetchUser(completion: @escaping (Result<[User], Error>) -> Void){
         var matchUserArray = [User]()
         var usersArray = [User]()
@@ -109,7 +112,7 @@ final class DatabaseManager {
                         print(user)
                         usersArray.append(user)
                     }
-//                    completion(.success(matchUserArray))
+                    //                    completion(.success(matchUserArray))
                     if matchUserArray.count == 0 {
                         completion(.success(usersArray))
                     } else {
@@ -129,63 +132,6 @@ final class DatabaseManager {
                 print(FetchUserError.FailedToFetchUser)
             }
         }
-    }
-    
-    public func sendLikeOrCancelLike(likeUserId: String, completion: @escaping (Result<String, Error>) -> Void){
-        guard let myUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as? String else {
-            return completion(.failure(LikeError.FailedToGetMyId))
-        }
-        //マッチチェック
-        db.collection("likes").whereField("myUserId", isEqualTo: likeUserId).whereField("likeUserId", isEqualTo: myUserId)
-            .getDocuments { [weak self](querySnapshot, err) in
-                if let err = err {
-                    print("Error getting documents: \(err)")
-                    completion(.failure(LikeError.FailedToCheckMatch))
-                } else if querySnapshot?.documents.isEmpty == true {
-                    //いいねかいいねキャンセルか出しわけ
-                    self?.db.collection("likes").whereField("myUserId", isEqualTo: myUserId).whereField("likeUserId", isEqualTo: likeUserId)
-                        
-                        .getDocuments() { [weak self](querySnapshot, err) in
-                            if let err = err {
-                                print("Error getting documents: \(err)")
-                            } else if querySnapshot?.documents.isEmpty == true {
-                                self?.db.collection("likes").addDocument(data: [
-                                    "myUserId": myUserId,
-                                    "likeUserId": likeUserId
-                                ]) { err in
-                                    if let err = err {
-                                        print("Error adding document: \(err)")
-                                        completion(.failure(LikeError.FailedToLike))
-                                    } else {
-                                        completion(.success("いいね"))
-                                    }
-                                }
-                            } else {
-                                for document in querySnapshot!.documents {
-                                    print("\(document.documentID) => \(document.data())")
-                                    self?.db.collection("likes").document(document.documentID).delete()
-                                    completion(.success("いいねキャンセル"))
-                                    return
-                                }
-                            }
-                    }
-                } else {
-                    //マッチ
-                    let match = [
-                        "users" : [myUserId,likeUserId]
-                    ]
-                    
-                    var ref: DocumentReference? = nil
-                    ref = self?.db.collection("matches").addDocument(data: match) { err in
-                        if let err = err {
-                            print("Error adding document: \(err)")
-                        } else {
-                            print("Document added with ID: \(ref!.documentID)")
-                            completion(.success("マッチ"))
-                        }
-                    }
-                }
-            }
     }
     
     public func fetchMatchUser(completion: @escaping (Result<[User], Error>) -> Void){
@@ -231,7 +177,68 @@ final class DatabaseManager {
             
         }
     }
-    
+    //MARK: - いいね処理
+    public func sendLikeOrCancelLike(likeUserId: String, completion: @escaping (Result<String, Error>) -> Void){
+        guard let myUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as? String else {
+            return completion(.failure(LikeError.FailedToGetMyId))
+        }
+        //マッチチェック
+        db.collection("likes").whereField("myUserId", isEqualTo: likeUserId).whereField("likeUserId", isEqualTo: myUserId)
+            .getDocuments { [weak self](querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                    completion(.failure(LikeError.FailedToCheckMatch))
+                } else if querySnapshot?.documents.isEmpty == true {
+                    //いいねかいいねキャンセルか出しわけ
+                    self?.db.collection("likes").whereField("myUserId", isEqualTo: myUserId).whereField("likeUserId", isEqualTo: likeUserId)
+                        
+                        .getDocuments() { [weak self](querySnapshot, err) in
+                            if let err = err {
+                                print("Error getting documents: \(err)")
+                            } else if querySnapshot?.documents.isEmpty == true {
+                                self?.db.collection("likes").addDocument(data: [
+                                    "myUserId": myUserId,
+                                    "likeUserId": likeUserId
+                                ]) { err in
+                                    if let err = err {
+                                        print("Error adding document: \(err)")
+                                        completion(.failure(LikeError.FailedToLike))
+                                    } else {
+                                        completion(.success("いいね"))
+                                    }
+                                }
+                            } else {
+                                for document in querySnapshot!.documents {
+                                    print("\(document.documentID) => \(document.data())")
+                                    self?.db.collection("likes").document(document.documentID).delete()
+                                    completion(.success("いいねキャンセル"))
+                                    return
+                                }
+                            }
+                        }
+                } else {
+                    //マッチ
+                    let match = [
+                        "users" : [myUserId,likeUserId]
+                    ]
+                    
+                    var ref: DocumentReference? = nil
+                    ref = self?.db.collection("matches").addDocument(data: match) { err in
+                        if let err = err {
+                            print("Error adding document: \(err)")
+                        } else {
+                            print("Document added with ID: \(ref!.documentID)")
+                            completion(.success("マッチ"))
+                        }
+                    }
+                }
+            }
+    }
+}
+
+
+//MARK: - メッセージ関連
+extension DatabaseManager {
     func sendMessage(text: String, matchId: String, senderId: String, completion: @escaping (Bool) -> Void ){
         let message = [
             "text" : text,
@@ -249,7 +256,6 @@ final class DatabaseManager {
                 completion(true)
             }
         }
-
     }
     
     func getMatchId(likeUserId: String, completion: @escaping (String) -> Void){
