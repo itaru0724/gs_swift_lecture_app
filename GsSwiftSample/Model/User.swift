@@ -8,8 +8,12 @@
 import Foundation
 import UIKit
 
-struct User {
+struct User: Equatable {
     let id: String
     let name: String
     let photoURL: String?
+    
+    static func ==(lhs: User, rhs: User) -> Bool{
+            return lhs.id == rhs.id
+    }
 }
