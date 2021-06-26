@@ -15,6 +15,8 @@ class ChatViewController: MessagesViewController, MessagesLayoutDelegate, Messag
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        guard let likeUser = likeUser else {return}
+        title = likeUser.name
 //        messagesCollectionView.messagesDataSource = self
 //        messagesCollectionView.messagesLayoutDelegate = self
 //        messagesCollectionView.messagesDisplayDelegate = self
