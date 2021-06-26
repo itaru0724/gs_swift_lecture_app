@@ -11,11 +11,10 @@ import CoreLocation
 
 class ChatViewController: MessagesViewController, MessagesLayoutDelegate, MessagesDisplayDelegate {
     
-    var likeUser: User?
+    var likeUser: User!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let likeUser = likeUser else {return}
         title = likeUser.name
 //        messagesCollectionView.messagesDataSource = self
 //        messagesCollectionView.messagesLayoutDelegate = self
