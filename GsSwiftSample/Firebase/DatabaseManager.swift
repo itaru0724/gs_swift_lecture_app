@@ -87,7 +87,6 @@ final class DatabaseManager {
             return completion(.failure(FetchUserError.FailedToGetId))
         }
         
-        //マッチしたユーザーも除く
         db.collection("users").whereField("firestoreId", isNotEqualTo: loggedInUserId).getDocuments { querySnapshot, error in
             guard let querySnapshot = querySnapshot, error == nil else {
                 return completion(.failure(FetchUserError.FailedToFetchUser))
@@ -163,36 +162,43 @@ final class DatabaseManager {
                     }
                 }
             }
-        
-//        //いいねかいいねキャンセルか出しわけ
-//        db.collection("likes").whereField("myUserId", isEqualTo: myUserId).whereField("likeUserId", isEqualTo: likeUserId)
-//            .getDocuments() { [weak self](querySnapshot, err) in
-//                if let err = err {
-//                    print("Error getting documents: \(err)")
-//                } else if querySnapshot?.documents.isEmpty == true {
-//                    self?.db.collection("likes").addDocument(data: [
-//                        "myUserId": myUserId,
-//                        "likeUserId": likeUserId
-//                    ]) { err in
-//                        if let err = err {
-//                            print("Error adding document: \(err)")
-//                        } else {
-//                            completion(true)
-//                        }
-//                    }
-//                } else {
-//                    for document in querySnapshot!.documents {
-//                        print("\(document.documentID) => \(document.data())")
-//                        self?.db.collection("likes").document(document.documentID).delete()
-//                        completion(false)
-//                        return
-//                    }
-//                }
-//        }
     }
     
-    public func getLikeStatusColor(){
+    public func fetchMatchUser(completion: @escaping (Result<[User], Error>) -> Void){
+        var matchUsers = [User]()
+        guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as? String else {
+            return completion(.failure(FetchUserError.FailedToGetId))
+        }
         
+        db.collection("matches").whereField("users", arrayContains: loggedInUserId).getDocuments { [weak self] querySnapshot, error in
+            guard let querySnapshot = querySnapshot, error == nil else {
+                return completion(.failure(FetchUserError.FailedToFetchUser))
+            }
+            for document in querySnapshot.documents {
+                let data = document.data()
+                
+                guard let users = data["users"] as? [String] else {
+                    return completion(.failure(FetchUserError.FailedToParse))
+                }
+                let matchUserId = users.filter{ $0 != loggedInUserId }
+                self?.db.collection("users").whereField("firestoreId", isEqualTo: matchUserId[0])
+                    .getDocuments { querySnapshot, error in
+                        guard error == nil else {return}
+                        for document in querySnapshot!.documents { //修正したい1件だけ取得の形
+                            let data = document.data()
+                            guard let id = data["firestoreId"] as? String,
+                                  let name = data["name"] as? String,
+                                  let photoURL = data["photoURL"] as? String
+                            else { return }
+                            let user = User(id: id, name: name, photoURL: photoURL)
+                            matchUsers.append(user)
+                        }
+//                        print("matchUsers: \(matchUsers)")
+                        completion(.success(matchUsers))
+                    }
+                
+            }
+        }
     }
 }
 

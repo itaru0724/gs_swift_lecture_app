@@ -14,7 +14,6 @@ class HomeViewController: UIViewController {
     var users = [User]()
     override func viewDidLoad() {
         super.viewDidLoad()
-        //マッチしたユーザーは表示させないのは宿題に・・・
         DatabaseManager.shared.fetchUser { [weak self] result in
             switch result{
             case .success(let users):
