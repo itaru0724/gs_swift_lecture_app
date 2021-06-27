@@ -121,7 +121,8 @@ final class DatabaseManager {
                     }
                 }
             } else {
-                self?.db.collection("users").whereField("firestoreId", isNotEqualTo: loggedInUserId).getDocuments { querySnapshot, error in
+                self?.db.collection("users").whereField("firestoreId", isNotEqualTo: loggedInUserId)
+                    .getDocuments { querySnapshot, error in
                     guard let querySnapshot = querySnapshot, error == nil else {
                         return completion([User]())
                     }
@@ -259,7 +260,7 @@ final class DatabaseManager {
         }
     }
     //MARK: - メッセージ関連
-    func sendMessage(text: String, matchId: String, senderId: String, completion: @escaping (Bool) -> Void ){
+    func sendMessage(text: String, matchId: String, senderId: String){
         let message = [
             "text" : text,
             "messageId" : UUID().uuidString,
@@ -270,10 +271,8 @@ final class DatabaseManager {
         db.collection("messages").document(matchId).collection("message").addDocument(data: message){ err in
             if let err = err {
                 print("Error writing document: \(err)")
-                completion(false)
             } else {
                 print("Document successfully written!")
-                completion(true)
             }
         }
     }
@@ -291,5 +290,70 @@ final class DatabaseManager {
                     }
                 }
             }
+    }
+    
+    func getAllMessages(matchId: String, loggedInUserId: String, completion: @escaping ([Message]) -> Void){
+        var messages = [Message]()
+        db.collection("messages").document(matchId).collection("message").order(by: "sentDate").getDocuments { querySnapshot, error in
+            guard let querySnapshot = querySnapshot, error == nil else {
+                return
+            }
+            for document in querySnapshot.documents {
+                let data = document.data()
+                guard let text = data["text"] as? String,
+                      let id = data["messageId"] as? String,
+                      let senderId = data["senderId"] as? String,
+                      let sentDate = data["sentDate"] as? Timestamp,
+                      let date = sentDate.dateValue() as? Date else {
+                    return
+                }
+                if senderId == loggedInUserId {
+                    let sender = Sender(senderId: loggedInUserId, displayName: "Me")
+                    let message = Message(sender: sender, messageId: id, sentDate: date, kind: .text(text))
+                    messages.append(message)
+                } else {
+                    let sender = Sender(senderId: senderId, displayName: "お相手")
+                    let message = Message(sender: sender, messageId: id, sentDate: date, kind: .text(text))
+                    messages.append(message)
+                }
+                completion(messages)
+            }
+        }
+    }
+    
+    func realtimeUpdatedMessages(matchId: String, loggedInUserId: String, completion: @escaping (Message) -> Void){
+        db.collection("messages").document(matchId).collection("message").order(by: "sentDate")
+            .addSnapshotListener { querySnapshot, error in
+                guard let snapshot = querySnapshot, error == nil else {
+                    return
+                }
+                snapshot.documentChanges.forEach { diff in
+                    if (diff.type == .added) {
+                        let data = diff.document.data()
+                        guard let text = data["text"] as? String,
+                              let id = data["messageId"] as? String,
+                              let senderId = data["senderId"] as? String,
+                              let sentDate = data["sentDate"] as? Timestamp,
+                              let date = sentDate.dateValue() as? Date else {
+                            return
+                        }
+                        if senderId == loggedInUserId {
+                            let sender = Sender(senderId: loggedInUserId, displayName: "Me")
+                            let message = Message(sender: sender, messageId: id, sentDate: date, kind: .text(text))
+                            completion(message)
+                        } else {
+                            let sender = Sender(senderId: senderId, displayName: "お相手")
+                            let message = Message(sender: sender, messageId: id, sentDate: date, kind: .text(text))
+                            completion(message)
+                        }
+                    }
+                }
+            }
+    }
+    
+    func detachListener(matchId: String){
+        let listener = db.collection("messages").document(matchId).collection("message").order(by: "sentDate")
+            .addSnapshotListener { _, _ in }
+        listener.remove()
     }
 }

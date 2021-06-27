@@ -27,15 +27,7 @@ class ChatViewController: MessagesViewController, MessagesLayoutDelegate, Messag
     var likeUser: User!
     var messages = [Message]()
     var matchId: String!
-    
-    let currnetUser = Sender(senderId: UserDefaults.standard.value(forKey: "loggedInUserId") as! String, displayName: "Me")
-    let dateFormatter:DateFormatter = DateFormatter()
-        
-    lazy var formatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter
-    }()
+    let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as! String
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,29 +36,36 @@ class ChatViewController: MessagesViewController, MessagesLayoutDelegate, Messag
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         messageInputBar.delegate = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        messageInputBar.inputTextView.becomeFirstResponder()
         
-        let otherUser = Sender(senderId: likeUser.id, displayName: likeUser.name)
-        
-        messages.append(Message(sender: currnetUser,
-                                messageId: "1",
-                                sentDate: Date().addingTimeInterval(-86400),
-                                kind: .text("Hello")))
-        messages.append(Message(sender: otherUser,
-                                messageId: "2",
-                                sentDate: Date().addingTimeInterval(-86300),
-                                kind: .text("Hello")))
+        DatabaseManager.shared.realtimeUpdatedMessages(matchId: matchId, loggedInUserId: loggedInUserId) { [weak self] message in
+            self?.messages.append(message)
+            self?.messagesCollectionView.reloadData()
+            self?.messagesCollectionView.scrollToLastItem()
+        }
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        DatabaseManager.shared.detachListener(matchId: matchId)
+        messageInputBar.isHidden = true
+        messages = [Message]()
     }
 }
 
 extension ChatViewController : MessagesDataSource{
     func currentSender() -> SenderType {
-        return currnetUser
+        return Sender(senderId: loggedInUserId, displayName: "Me")
     }
-
+    
     func messageForItem(at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> MessageType {
-        messages[indexPath.section]
+        return messages[indexPath.section]
     }
-
+    
     func numberOfSections(in messagesCollectionView: MessagesCollectionView) -> Int {
         return messages.count
     }
@@ -75,22 +74,6 @@ extension ChatViewController : MessagesDataSource{
 extension ChatViewController: InputBarAccessoryViewDelegate {
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         guard !text.replacingOccurrences(of: " ", with: "").isEmpty else {return}
-        DatabaseManager.shared.sendMessage(text: text, matchId: matchId, senderId: currnetUser.senderId) { success in
-            let result = success ? "送信に成功" : "送信に失敗"
-            print(result)
-        }
+        DatabaseManager.shared.sendMessage(text: text, matchId: matchId, senderId: loggedInUserId)
     }
-    
-    func inputBar(_ inputBar: InputBarAccessoryView, didChangeIntrinsicContentTo size: CGSize) {
-        
-    }
-    
-    func inputBar(_ inputBar: InputBarAccessoryView, textViewTextDidChangeTo text: String) {
-        
-    }
-    
-    func inputBar(_ inputBar: InputBarAccessoryView, didSwipeTextViewWith gesture: UISwipeGestureRecognizer) {
-        
-    }
-    
 }
