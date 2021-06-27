@@ -22,7 +22,7 @@ class MatchListViewController: UIViewController {
                 self?.users = users
                 self?.tableView.reloadData()
             } else {
-                print("MatchListVCerror")
+                print("There are no match users yet...")
             }
         }
     }

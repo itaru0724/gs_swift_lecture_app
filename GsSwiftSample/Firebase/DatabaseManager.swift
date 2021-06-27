@@ -30,7 +30,8 @@ final class DatabaseManager {
             ref = self?.db.collection("users").addDocument(data: user) { err in
                 if let err = err {
                     print("Error adding document: \(err)")
-                    return completion(false)
+                    completion(false)
+                    return
                 } else {
                     print("Document added with ID: \(ref!.documentID)")
                     self?.db.collection("users").document(ref!.documentID).updateData([
@@ -38,9 +39,8 @@ final class DatabaseManager {
                     ])
                     
                     guard let image = photo, let data = image.pngData() else {
-                        completion(true)
-                        self?.getLoggedInUserId(loggedInUserEmail: email) { id in
-                            UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+                        self?.getLoggedInUserId(loggedInUserEmail: email) { _ in
+                            completion(true)
                         }
                         return
                     }
@@ -50,13 +50,14 @@ final class DatabaseManager {
                             self?.db.collection("users").document(ref!.documentID).updateData([
                                 "photoURL" : url
                             ])
-                            completion(true)
-                            self?.getLoggedInUserId(loggedInUserEmail: email) { id in
-                                UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+                            self?.getLoggedInUserId(loggedInUserEmail: email) { _ in
+                                completion(true)
                             }
+                            return
                         case .failure(_):
                             print("Couldn't get profile url")
                             completion(false)
+                            return
                         }
                     }
                 }
@@ -70,12 +71,10 @@ final class DatabaseManager {
                 if let err = err {
                     print("Error getting documents: \(err)")
                 } else {
-                    for document in querySnapshot!.documents {
-                        print("\(document.documentID) => \(document.data())")
-                        guard let id = document.data()["firestoreId"] as? String else {return}
-                        UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
-                        completion(id)
-                    }
+                    let document = querySnapshot?.documents.first
+                    guard let id = document?.data()["firestoreId"] as? String else {return}
+                    UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+                    completion(id)
                 }
             }
     }
@@ -84,13 +83,13 @@ final class DatabaseManager {
     public func fetchUser(completion: @escaping ([User]) -> Void){
         var matchUserArray = [User]()
         var usersArray = [User]()
+        guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") else {
+            print("loginしたuserのidが取れなかった@fetchUser")
+            return completion([User]())
+        }
         fetchMatchUser { [weak self] users in
             if !users.isEmpty {
                 matchUserArray = users //([User])ってなに [User]との違い
-                
-                guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") else {
-                    return completion([User]())
-                }
                 
                 self?.db.collection("users").whereField("firestoreId", isNotEqualTo: loggedInUserId).getDocuments { querySnapshot, error in
                     guard let querySnapshot = querySnapshot, error == nil else {
@@ -98,24 +97,21 @@ final class DatabaseManager {
                     }
                     for document in querySnapshot.documents {
                         let data = document.data()
-//                        print(data)
                         guard let name = data["name"] as? String,
                               let id = data["firestoreId"] as? String,
                               let photoURL = data["photoURL"] as? String else {
                             return completion([User]())
                         }
                         let user = User(id: id, name: name, photoURL: photoURL)
-//                        print(user)
                         usersArray.append(user)
                     }
-                    //                    completion(.success(matchUserArray))
                     if matchUserArray.count == 0 {
                         completion(usersArray)
                         return
                     } else {
                         let notMatchedUsers: [User] = usersArray.compactMap{ user in
                             if (matchUserArray.filter{ $0 == user}).count == 0 {
-                                print(user)
+//                                print(user)
                                 return user
                             } else {
                                 return nil
@@ -124,6 +120,23 @@ final class DatabaseManager {
                         completion(notMatchedUsers)
                     }
                 }
+            } else {
+                self?.db.collection("users").whereField("firestoreId", isNotEqualTo: loggedInUserId).getDocuments { querySnapshot, error in
+                    guard let querySnapshot = querySnapshot, error == nil else {
+                        return completion([User]())
+                    }
+                    for document in querySnapshot.documents {
+                        let data = document.data()
+                        guard let name = data["name"] as? String,
+                              let id = data["firestoreId"] as? String,
+                              let photoURL = data["photoURL"] as? String else {
+                            return completion([User]())
+                        }
+                        let user = User(id: id, name: name, photoURL: photoURL)
+                        usersArray.append(user)
+                    }
+                    completion(usersArray)
+                }
             }
         }
     }
@@ -131,6 +144,7 @@ final class DatabaseManager {
     public func fetchMatchUser(completion: @escaping ([User]) -> Void){
         var matchUsers = [User]()
         guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as? String else {
+            print("loginしたuserのidが取れなかった@fetchMatchUser")
             return
         }
         

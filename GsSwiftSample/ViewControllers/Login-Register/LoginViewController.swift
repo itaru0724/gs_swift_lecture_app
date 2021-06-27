@@ -32,8 +32,7 @@ class LoginViewController: UIViewController {
         
         Auth.auth().signIn(withEmail: email, password: password) { [weak self] _, error in
             guard error == nil else {return}
-            DatabaseManager.shared.getLoggedInUserId(loggedInUserEmail: email) { id in
-                UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
+            DatabaseManager.shared.getLoggedInUserId(loggedInUserEmail: email) { _ in
                 let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
                 tabVC.modalPresentationStyle = .fullScreen
                 self?.present(tabVC, animated: true, completion: nil)

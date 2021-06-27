@@ -37,12 +37,9 @@ class RegisterViewController: UIViewController, UIImagePickerControllerDelegate,
         else { return }
         DatabaseManager.shared.registerUser(name: name, email: email, password: password, photo: profileImageView.image, completion: { [weak self] result in
             if result {
-                DatabaseManager.shared.getLoggedInUserId(loggedInUserEmail: email) { id in
-                    UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
-                    let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
-                    tabVC.modalPresentationStyle = .fullScreen
-                    self?.present(tabVC, animated: true, completion: nil)
-                }
+                let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
+                tabVC.modalPresentationStyle = .fullScreen
+                self?.present(tabVC, animated: true, completion: nil)
             } else {
                 let alert = UIAlertController(title: "エラー", message: "登録できなかったよ", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
