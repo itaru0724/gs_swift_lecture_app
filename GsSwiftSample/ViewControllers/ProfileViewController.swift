@@ -9,7 +9,7 @@ import UIKit
 import FirebaseAuth
 
 class ProfileViewController: UIViewController {
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //プロフィールは宿題にする！！！！！！！！！！！！１

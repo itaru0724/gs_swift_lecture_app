@@ -9,7 +9,7 @@ import UIKit
 import SDWebImage
 
 class HomeViewController: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
     var users = [User]()
     override func viewDidLoad() {
@@ -47,9 +47,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let user = users[indexPath.row]
         cell.textLabel?.text = user.name
         cell.imageView?.sd_setImage(with: URL(string: user.photoURL!), completed: { (_, error, _, _) in
-          if error == nil {
-            cell.setNeedsLayout()//これがないと普通のcellで画像が一発で表示されない
-          }
+            if error == nil {
+                cell.setNeedsLayout()//これがないと普通のcellで画像が一発で表示されない
+            }
         })
         DatabaseManager.shared.likeAlready(likeUserId: user.id) { liked in
             cell.backgroundColor = liked ? .systemYellow : .systemBackground
@@ -80,7 +80,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             } else {
                 print("いいね処理失敗だよ")
             }
-           
+            
         }
     }
 }

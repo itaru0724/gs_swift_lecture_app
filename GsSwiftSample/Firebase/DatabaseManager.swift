@@ -111,7 +111,6 @@ final class DatabaseManager {
                     } else {
                         let notMatchedUsers: [User] = usersArray.compactMap{ user in
                             if (matchUserArray.filter{ $0 == user}).count == 0 {
-//                                print(user)
                                 return user
                             } else {
                                 return nil
@@ -123,21 +122,21 @@ final class DatabaseManager {
             } else {
                 self?.db.collection("users").whereField("firestoreId", isNotEqualTo: loggedInUserId)
                     .getDocuments { querySnapshot, error in
-                    guard let querySnapshot = querySnapshot, error == nil else {
-                        return completion([User]())
-                    }
-                    for document in querySnapshot.documents {
-                        let data = document.data()
-                        guard let name = data["name"] as? String,
-                              let id = data["firestoreId"] as? String,
-                              let photoURL = data["photoURL"] as? String else {
+                        guard let querySnapshot = querySnapshot, error == nil else {
                             return completion([User]())
                         }
-                        let user = User(id: id, name: name, photoURL: photoURL)
-                        usersArray.append(user)
+                        for document in querySnapshot.documents {
+                            let data = document.data()
+                            guard let name = data["name"] as? String,
+                                  let id = data["firestoreId"] as? String,
+                                  let photoURL = data["photoURL"] as? String else {
+                                return completion([User]())
+                            }
+                            let user = User(id: id, name: name, photoURL: photoURL)
+                            usersArray.append(user)
+                        }
+                        completion(usersArray)
                     }
-                    completion(usersArray)
-                }
             }
         }
     }
@@ -257,7 +256,7 @@ final class DatabaseManager {
                 } else {
                     completion(true)
                 }
-        }
+            }
     }
     //MARK: - メッセージ関連
     func sendMessage(text: String, matchId: String, senderId: String){

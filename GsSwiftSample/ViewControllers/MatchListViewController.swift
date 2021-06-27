@@ -8,7 +8,7 @@
 import UIKit
 
 class MatchListViewController: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
     var users = [User]()
     override func viewDidLoad() {
@@ -39,9 +39,9 @@ extension MatchListViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MatchListCell", for: indexPath)
         cell.textLabel?.text = user.name
         cell.imageView?.sd_setImage(with: URL(string: user.photoURL!), completed: { (_, error, _, _) in
-          if error == nil {
-            cell.setNeedsLayout()//これがないと普通のcellで画像が一発で表示されない
-          }
+            if error == nil {
+                cell.setNeedsLayout()//これがないと普通のcellで画像が一発で表示されない
+            }
         })
         return cell
     }

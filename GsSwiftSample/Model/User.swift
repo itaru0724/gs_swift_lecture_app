@@ -14,6 +14,6 @@ struct User: Equatable {
     let photoURL: String?
     
     static func ==(lhs: User, rhs: User) -> Bool{
-            return lhs.id == rhs.id
+        return lhs.id == rhs.id
     }
 }
