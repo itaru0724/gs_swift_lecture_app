@@ -18,15 +18,14 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        DatabaseManager.shared.fetchUser { [weak self] result in
-            switch result{
-            case .success(let users):
+        DatabaseManager.shared.fetchUser { [weak self] users in
+            if !users.isEmpty {
                 DispatchQueue.main.async {
                     self?.users = users
                     self?.tableView.reloadData()
                 }
-            case .failure(let error):
-                print(error)
+            } else {
+                print("ユーザー取得失敗")
             }
         }
     }
@@ -62,26 +61,24 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let likeUserId = users[indexPath.row].id
-        DatabaseManager.shared.sendLikeOrCancelLike(likeUserId: likeUserId) { [weak self] result in
-            switch result {
-            case .success(let title):
+        DatabaseManager.shared.sendLikeOrCancelLike(likeUserId: likeUserId) { [weak self] title in
+            if !title.isEmpty {
                 let alert = UIAlertController(title: title, message: "\(title)しました。", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self?.present(alert, animated: true)
                 
                 if title == "マッチ" {
-                    DatabaseManager.shared.fetchUser { result in
-                        switch result {
-                        case .success(let users):
+                    DatabaseManager.shared.fetchUser { users in
+                        if !users.isEmpty {
                             self?.users = users
                             tableView.reloadData()
-                        case .failure(_):
+                        } else {
                             print("マッチした後のエラーだよ")
                         }
                     }
                 }
-            case .failure(let error):
-                print(error)
+            } else {
+                print("いいね処理失敗だよ")
             }
            
         }

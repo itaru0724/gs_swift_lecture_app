@@ -36,16 +36,15 @@ class RegisterViewController: UIViewController, UIImagePickerControllerDelegate,
               let password = passwordTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines)
         else { return }
         DatabaseManager.shared.registerUser(name: name, email: email, password: password, photo: profileImageView.image, completion: { [weak self] result in
-            switch result{
-            case .success(_):
+            if result {
                 DatabaseManager.shared.getLoggedInUserId(loggedInUserEmail: email) { id in
                     UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
                     let tabVC = self?.storyboard?.instantiateViewController(identifier: "tabVC") as! TabBarViewController
                     tabVC.modalPresentationStyle = .fullScreen
                     self?.present(tabVC, animated: true, completion: nil)
                 }
-            case .failure(let error):
-                let alert = UIAlertController(title: "エラー", message: error.localizedDescription, preferredStyle: .alert)
+            } else {
+                let alert = UIAlertController(title: "エラー", message: "登録できなかったよ", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self?.present(alert, animated: true, completion: nil)
             }

@@ -17,12 +17,11 @@ class MatchListViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        DatabaseManager.shared.fetchMatchUser { [weak self] result in
-            switch result {
-            case .success(let users):
+        DatabaseManager.shared.fetchMatchUser { [weak self] users in
+            if !users.isEmpty {
                 self?.users = users
                 self?.tableView.reloadData()
-            case .failure(_):
+            } else {
                 print("MatchListVCerror")
             }
         }

@@ -14,12 +14,11 @@ final class DatabaseManager {
     private init() {}
     let db = Firestore.firestore()
     
-    public func registerUser(name: String, email: String, password: String, photo: UIImage?, completion: @escaping (Result<Bool, Error>) -> Void){
+    public func registerUser(name: String, email: String, password: String, photo: UIImage?, completion: @escaping (Bool) -> Void){
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] authResult, error in
             guard authResult != nil, error == nil else {
                 print("Error creating user")
-                completion(.failure(RegisterError.AuthError))
-                return
+                return completion(false)
             }
             
             let user = [
@@ -31,7 +30,7 @@ final class DatabaseManager {
             ref = self?.db.collection("users").addDocument(data: user) { err in
                 if let err = err {
                     print("Error adding document: \(err)")
-                    completion(.failure(RegisterError.FirestoreError))
+                    return completion(false)
                 } else {
                     print("Document added with ID: \(ref!.documentID)")
                     self?.db.collection("users").document(ref!.documentID).updateData([
@@ -39,7 +38,7 @@ final class DatabaseManager {
                     ])
                     
                     guard let image = photo, let data = image.pngData() else {
-                        completion(.success(true))
+                        completion(true)
                         self?.getLoggedInUserId(loggedInUserEmail: email) { id in
                             UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
                         }
@@ -51,13 +50,13 @@ final class DatabaseManager {
                             self?.db.collection("users").document(ref!.documentID).updateData([
                                 "photoURL" : url
                             ])
-                            completion(.success(true))
+                            completion(true)
                             self?.getLoggedInUserId(loggedInUserEmail: email) { id in
                                 UserDefaults.standard.setValue(id, forKey: "loggedInUserId")
                             }
                         case .failure(_):
                             print("Couldn't get profile url")
-                            completion(.failure(RegisterError.StorageError))
+                            completion(false)
                         }
                     }
                 }
@@ -82,75 +81,72 @@ final class DatabaseManager {
     }
     
     //MARK: - ユーザー取得
-    public func fetchUser(completion: @escaping (Result<[User], Error>) -> Void){
+    public func fetchUser(completion: @escaping ([User]) -> Void){
         var matchUserArray = [User]()
         var usersArray = [User]()
-        fetchMatchUser { [weak self] result in
-            switch result {
-            case .success(let users):
+        fetchMatchUser { [weak self] users in
+            if !users.isEmpty {
                 matchUserArray = users //([User])ってなに [User]との違い
                 
                 guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") else {
-                    return completion(.failure(FetchUserError.FailedToGetId))
+                    return completion([User]())
                 }
                 
                 self?.db.collection("users").whereField("firestoreId", isNotEqualTo: loggedInUserId).getDocuments { querySnapshot, error in
                     guard let querySnapshot = querySnapshot, error == nil else {
-                        return completion(.failure(FetchUserError.FailedToFetchUser))
+                        return completion([User]())
                     }
                     for document in querySnapshot.documents {
                         let data = document.data()
-                        print(data)
+//                        print(data)
                         guard let name = data["name"] as? String,
                               let id = data["firestoreId"] as? String,
                               let photoURL = data["photoURL"] as? String else {
-                            return completion(.failure(FetchUserError.FailedToParse))
+                            return completion([User]())
                         }
                         let user = User(id: id, name: name, photoURL: photoURL)
-                        print(user)
+//                        print(user)
                         usersArray.append(user)
                     }
                     //                    completion(.success(matchUserArray))
                     if matchUserArray.count == 0 {
-                        completion(.success(usersArray))
+                        completion(usersArray)
+                        return
                     } else {
                         let notMatchedUsers: [User] = usersArray.compactMap{ user in
                             if (matchUserArray.filter{ $0 == user}).count == 0 {
+                                print(user)
                                 return user
                             } else {
                                 return nil
                             }
                         }
-                        completion(.success(notMatchedUsers))
+                        completion(notMatchedUsers)
                     }
-                    
                 }
-                
-            case .failure(_):
-                print(FetchUserError.FailedToFetchUser)
             }
         }
     }
     
-    public func fetchMatchUser(completion: @escaping (Result<[User], Error>) -> Void){
+    public func fetchMatchUser(completion: @escaping ([User]) -> Void){
         var matchUsers = [User]()
         guard let loggedInUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as? String else {
-            return completion(.failure(FetchUserError.FailedToGetId))
+            return
         }
         
         db.collection("matches").whereField("users", arrayContains: loggedInUserId).getDocuments { [weak self] querySnapshot, error in
             guard let querySnapshot = querySnapshot, error == nil else {
-                return completion(.failure(FetchUserError.FailedToFetchUser))
+                return
             }
             
             if querySnapshot.documents.isEmpty {
-                completion(.success([User]()))
+                completion([User]())
             } else {
                 for document in querySnapshot.documents {
                     let data = document.data()
                     
                     guard let users = data["users"] as? [String] else {
-                        return completion(.failure(FetchUserError.FailedToParse))
+                        return
                     }
                     let matchUserId = users.filter{ $0 != loggedInUserId }
                     self?.db.collection("users").whereField("firestoreId", isEqualTo: matchUserId[0])
@@ -166,7 +162,7 @@ final class DatabaseManager {
                                 matchUsers.append(user)
                             }
                             //print("matchUsers: \(matchUsers)")
-                            completion(.success(matchUsers))
+                            completion(matchUsers)
                         }
                     
                 }
@@ -176,16 +172,16 @@ final class DatabaseManager {
         }
     }
     //MARK: - いいね処理
-    public func sendLikeOrCancelLike(likeUserId: String, completion: @escaping (Result<String, Error>) -> Void){
+    public func sendLikeOrCancelLike(likeUserId: String, completion: @escaping (String) -> Void){
         guard let myUserId = UserDefaults.standard.value(forKey: "loggedInUserId") as? String else {
-            return completion(.failure(LikeError.FailedToGetMyId))
+            return
         }
         //マッチチェック
         db.collection("likes").whereField("myUserId", isEqualTo: likeUserId).whereField("likeUserId", isEqualTo: myUserId)
             .getDocuments { [weak self](querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
-                    completion(.failure(LikeError.FailedToCheckMatch))
+                    return
                 } else if querySnapshot?.documents.isEmpty == true {
                     //いいねかいいねキャンセルか出しわけ
                     self?.db.collection("likes").whereField("myUserId", isEqualTo: myUserId).whereField("likeUserId", isEqualTo: likeUserId)
@@ -200,16 +196,16 @@ final class DatabaseManager {
                                 ]) { err in
                                     if let err = err {
                                         print("Error adding document: \(err)")
-                                        completion(.failure(LikeError.FailedToLike))
+                                        return
                                     } else {
-                                        completion(.success("いいね"))
+                                        completion("いいね")
                                     }
                                 }
                             } else {
                                 for document in querySnapshot!.documents {
                                     print("\(document.documentID) => \(document.data())")
                                     self?.db.collection("likes").document(document.documentID).delete()
-                                    completion(.success("いいねキャンセル"))
+                                    completion("いいねキャンセル")
                                     return
                                 }
                             }
@@ -226,7 +222,7 @@ final class DatabaseManager {
                             print("Error adding document: \(err)")
                         } else {
                             print("Document added with ID: \(ref!.documentID)")
-                            completion(.success("マッチ"))
+                            completion("マッチ")
                         }
                     }
                 }
@@ -282,22 +278,4 @@ final class DatabaseManager {
                 }
             }
     }
-}
-
-enum RegisterError : Error {
-    case AuthError
-    case FirestoreError
-    case StorageError
-}
-
-enum FetchUserError : Error {
-    case FailedToGetId
-    case FailedToFetchUser
-    case FailedToParse
-}
-
-enum LikeError : Error {
-    case FailedToGetMyId
-    case FailedToLike
-    case FailedToCheckMatch
 }
